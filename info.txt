@@ -1,0 +1,18 @@
+0.
+bpnn 最开始的学习项目，手写数字识别
+
+
+
+1.
+idl_split envi——idl程序，均匀分割遥感图像，用于采集训练样本。
+blocks 从sample1000.png中裁剪下来的20x20样本
+sample1000图像是wordview深圳地区示例遥感数据的一小块研究区域
+train_samples 是blocks中样本整理后分类
+
+2.
+train20 用于学习神经网络对图像分类
+
+
+
+
+

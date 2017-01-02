@@ -1,0 +1,66 @@
+# depslib dependency file v1.0
+1482458575 source:c:\wangfeng\neuronnetwork\bpnn\clayer.cpp
+	"clayer.h"
+	<assert.h>
+	<thread>
+
+1482458594 c:\wangfeng\neuronnetwork\bpnn\clayer.h
+	"cneuron.h"
+	<vector>
+
+1482458634 c:\wangfeng\neuronnetwork\bpnn\cneuron.h
+	<stdio.h>
+	<string>
+	<vector>
+
+1482471722 source:c:\wangfeng\neuronnetwork\bpnn\cneuron.cpp
+	"cneuron.h"
+	<stdlib.h>
+	<assert.h>
+	"clayer.h"
+	<math.h>
+
+1482472861 source:c:\wangfeng\neuronnetwork\bpnn\cnn.cpp
+	"cnn.h"
+	<assert.h>
+	<math.h>
+	<stdlib.h>
+	<fstream>
+	"wftools.h"
+	<time.h>
+
+1482472794 c:\wangfeng\neuronnetwork\bpnn\cnn.h
+	"cneuron.h"
+	"clayer.h"
+	<vector>
+	"wdata.h"
+
+1482243649 c:\wangfeng\neuronnetwork\bpnn\wdata.h
+	<vector>
+
+1482199710 c:\wangfeng\neuronnetwork\bpnn\wftools.h
+	<string>
+	<vector>
+	<sstream>
+	<iostream>
+
+1482281032 source:c:\wangfeng\neuronnetwork\bpnn\wdata.cpp
+	"wdata.h"
+	<assert.h>
+	<cstddef>
+
+1482196997 source:c:\wangfeng\neuronnetwork\bpnn\wftools.c
+
+1482477025 source:c:\wangfeng\neuronnetwork\bpnn\main.cpp
+	<stdio.h>
+	<string>
+	<vector>
+	"cneuron.h"
+	<stdlib.h>
+	"clayer.h"
+	"cnn.h"
+	<iostream>
+	<time.h>
+	<assert.h>
+	<string.h>
+

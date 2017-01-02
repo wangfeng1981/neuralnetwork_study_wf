@@ -1,0 +1,113 @@
+# depslib dependency file v1.0
+1482997060 source:e:\nn\train20\example_decode.cpp
+	"lodepng.h"
+	<iostream>
+
+1482353212 e:\nn\train20\lodepng.h
+	<string.h>
+	<vector>
+	<string>
+	"lodepng.h"
+	<iostream>
+	"lodepng.h"
+
+1482353212 source:e:\nn\train20\lodepng.cpp
+	"lodepng.h"
+	<limits.h>
+	<stdio.h>
+	<stdlib.h>
+
+1483015620 source:e:\nn\train20\wimage.cpp
+	"wImage.h"
+	<assert.h>
+	"lodepng.h"
+	<iostream>
+
+1483015580 e:\nn\train20\wimage.h
+	<string>
+	<vector>
+
+1483018685 source:e:\nn\train20\main.cpp
+	<stdio.h>
+	<string>
+	<vector>
+	"cneuron.h"
+	<stdlib.h>
+	"clayer.h"
+	"cnn.h"
+	<iostream>
+	<time.h>
+	<assert.h>
+	<string.h>
+
+1482458636 e:\nn\train20\cneuron.h
+	<stdio.h>
+	<string>
+	<vector>
+
+1482458596 e:\nn\train20\clayer.h
+	"cneuron.h"
+	<vector>
+
+1482472796 e:\nn\train20\cnn.h
+	"cneuron.h"
+	"clayer.h"
+	<vector>
+	"wdata.h"
+
+1483077605 e:\nn\train20\wdata.h
+	<vector>
+	"wImage.h"
+
+1482458576 source:e:\nn\train20\clayer.cpp
+	"clayer.h"
+	<assert.h>
+	<thread>
+
+1483018898 source:e:\nn\train20\cneuron.cpp
+	"cneuron.h"
+	<stdlib.h>
+	<assert.h>
+	"clayer.h"
+	<math.h>
+
+1483060653 source:e:\nn\train20\cnn.cpp
+	"cnn.h"
+	<assert.h>
+	<math.h>
+	<stdlib.h>
+	<fstream>
+	"wftools.h"
+	<time.h>
+
+1482199712 e:\nn\train20\wftools.h
+	<string>
+	<vector>
+	<sstream>
+	<iostream>
+
+1482196998 source:e:\nn\train20\wftools.c
+
+1483016817 source:e:\nn\train20\main1.cpp
+	<iostream>
+	<stdio.h>
+	<iomanip>
+	"wImage.h"
+
+1483077626 source:e:\nn\train20\wdata.cpp
+	"wdata.h"
+	<assert.h>
+	<cstddef>
+
+1483079263 source:e:\nn\train20\wsampleone.cpp
+	"wsampleone.h"
+	"lodepng.h"
+	<assert.h>
+	"wdata.h"
+	<iostream>
+
+1483066875 e:\nn\train20\wsampleone.h
+	<vector>
+	"wImage.h"
+	"cnn.h"
+
