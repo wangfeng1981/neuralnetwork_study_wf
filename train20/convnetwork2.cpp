@@ -1,5 +1,13 @@
 #include "convnetwork2.h"
 #include <assert.h>
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include "wftools.h"
+
+//#define DEBUG_MODE1
+
+using namespace std;
 
 #define SAFE_DELETE(p) if(p){delete p;p=0;}
 
@@ -10,18 +18,18 @@ CNNInputLayer::CNNInputLayer(const int nx,const int ny,const int nz) {
 CNNInputLayer::~CNNInputLayer() {
     SAFE_DELETE(mdata3d) ;
 }
-void CNNInputLayer::resetDataFromWImage(wImage& wimg) {
-    assert(this->mdata3d->getNumx()==wimg.getCols()) ;
-    assert(this->mdata3d->getNumy()==wimg.getRows()) ;
+void CNNInputLayer::resetDataFromWImage(wImage& wimg,double scale) {
+    assert(this->mdata3d->getNumx()==(int)wimg.getCols()) ;
+    assert(this->mdata3d->getNumy()==(int)wimg.getRows()) ;
     assert(this->mdata3d->getNumdep()==3) ;
 
     for(int ix = 0 ; ix < mdata3d->getNumx() ; ++ ix ){
         for(int iy = 0 ; iy < mdata3d->getNumy() ; ++ iy ){
             int r,g,b ;
             wimg.getRGB(iy,ix,r,g,b) ;
-            mdata3d->setValueAt(ix,iy,0,(double)r) ;
-            mdata3d->setValueAt(ix,iy,1,(double)g) ;
-            mdata3d->setValueAt(ix,iy,2,(double)b) ;
+            mdata3d->setValueAt(ix,iy,0,(double)r*scale) ;
+            mdata3d->setValueAt(ix,iy,1,(double)g*scale) ;
+            mdata3d->setValueAt(ix,iy,2,(double)b*scale) ;
         }
     }
 }
@@ -61,7 +69,7 @@ CNNConvLayer::~CNNConvLayer() {
 void CNNConvLayer::computeAndSumFilterDeltaWeights(const Array3d* prevLayerActivArray) {
     int outnx = this->mactiv3d->getNumx() ;
     int outny = this->mactiv3d->getNumy() ;
-    int outnz = this->mactiv3d->getNumdep() ;
+    //int outnz = this->mactiv3d->getNumdep() ;
 
     int knx = this->mfilter3dVector[0]->getNumx() ;
     int kny = this->mfilter3dVector[0]->getNumy() ;
@@ -80,7 +88,7 @@ void CNNConvLayer::computeAndSumFilterDeltaWeights(const Array3d* prevLayerActiv
 
                     for(int ox = 0 ; ox < outnx ; ++ ox ){
                         for(int oy = 0 ; oy < outny ; ++ oy ){
-                            double dxyfr = this->mactiv3d->getValueAt(ox,oy,ifilter) ;
+                            double dxyfr = this->mdelta3d->getValueAt(ox,oy,ifilter) ;
                             double actir = prevLayerActivArray->getValueAt(ox+kx,oy+ky,kz) ;
                             double dw = dxyfr * actir ;
                             sum1 += dw ;
@@ -106,21 +114,35 @@ void CNNConvLayer::updateFilterWeights(const double studyRate,const double momen
 
     int nfilter = (int)this->mfilter3dVector.size() ;
 
+    #ifdef DEBUG_MODE
+    cout<<"Convolution dw"<<endl;
+    #endif // DEBUG_MODE
     for(int ifilter = 0 ; ifilter < nfilter ; ++ ifilter ){
-
+        #ifdef DEBUG_MODE
+        cout<<"filter:"<<ifilter<<endl;
+        #endif // DEBUG_MODE
         Array3d* filter = this->mfilter3dVector[ifilter] ;
         Array3d* dweightSum = this->mDeltaFilterWeightsSum3dVector[ifilter] ;
         for(int kz = 0 ; kz < knz ; ++ kz ){
-            for(int kx = 0 ; kx < knx ; ++ kx ){
-                for(int ky = 0 ; ky < kny ; ++ ky ){
+            for(int ky = 0 ; ky < kny ; ++ ky ){
+                for(int kx = 0 ; kx < knx ; ++ kx ){
                     double dwsum = dweightSum->getValueAt(kx,ky,kz) ;
                     double dw = dwsum * rate ;
 
                     double oldw = filter->getValueAt(kx,ky,kz) ;
                     double neww = oldw - dw ;
                     filter->setValueAt(kx,ky,kz,neww) ;
+                    #ifdef DEBUG_MODE
+                    printf("%5.4f " , dw) ;
+                    #endif // DEBUG_MODE
                 }
+                #ifdef DEBUG_MODE
+                cout<<endl;
+                #endif // DEBUG_MODE
             }
+            #ifdef DEBUG_MODE
+            cout<<endl;
+            #endif // DEBUG_MODE
         }
         dweightSum->zero() ;
     }
@@ -171,38 +193,30 @@ CNNFullConnLayer::~CNNFullConnLayer() {
 void CNNFullConnLayer::computeAndSumDeltaWeightsAndBias(const Array3d* prevLayerActivArray) {
     int nneu = this->mactiv1d->get1DValueNum() ;
     int nw = this->mweight2d->getNumx() ;
-    //cout<<"full conn delta sum"<<endl;
+
     for(int inn = 0 ; inn < nneu ; ++ inn ){
         for(int iw = 0 ; iw < nw ; ++iw ){
-
-            /*big error here!
-            double sum1 = 0.0 ;
-            for(int jnn = 0 ; jnn < nneu ; ++ jnn ){
-                double deltar = this->mdelta1d->get1DValueAt(jnn) ;
-                double activr = prevLayerActivArray->get1DValueAt(iw) ;
-                sum1 += deltar * activr ;
-            }
-            double dw = sum1 ; // sum1 * studyRate ;*/
             double prev_acti_k = prevLayerActivArray->get1DValueAt(iw) ;
             double curr_delta_i = this->mdelta1d->get1DValueAt(inn) ;
             double dw = prev_acti_k*curr_delta_i ;
             double oldsum = this->mDeltaWeightSum2d->getValueAt(iw,inn,0) ;
             double newsum = oldsum + dw ;
             this->mDeltaWeightSum2d->setValueAt(iw,inn,0,newsum) ;
-            //cout<<newsum<<","<<dw<<","<<oldsum<<" ";
         }
-        double db =  this->mdelta1d->get1DValueAt(inn); // this->mdelta1d->get1DValueAt(inn) * studyRate ;
+        double db =  this->mdelta1d->get1DValueAt(inn);
         double oldsumb = this->mDeltaBiasSum1d->get1DValueAt(inn) ;
         double newsumb = oldsumb + db ;
         this->mDeltaBiasSum1d->set1DValueAt(inn,newsumb) ;
-        //cout<<newsumb<<" "<<endl;
+
     }
     ++ mSampleNumber ;
-    //system("pause");
+
 }
 void CNNFullConnLayer::updateWeightsAndBias(double studyRate,double momentum) {
     double rate = studyRate/this->mSampleNumber ;
-    //cout<<"dweights dbias"<<endl;
+    #ifdef DEBUG_MODE
+    cout<<"full connect dw"<<endl;
+    #endif // DEBUG_MODE
     int nw = this->mweight2d->getNumx() ;
     int nneu = this->mweight2d->getNumy() ;
     for(int inn = 0 ; inn < nneu ; ++ inn ){
@@ -212,20 +226,25 @@ void CNNFullConnLayer::updateWeightsAndBias(double studyRate,double momentum) {
             double oldw = this->mweight2d->getValueAt(iw,inn,0) ;
             double neww = oldw - dw ;
             this->mweight2d->setValueAt(iw,inn,0,neww) ;
-            //cout<<dw<<" ";
+            #ifdef DEBUG_MODE
+            printf("%.02f " , dw) ;
+            #endif // DEBUG_MODE
         }
         double dbsum = this->mDeltaBiasSum1d->get1DValueAt(inn) ;
         double db = dbsum * rate ;
         double oldb = this->mbias1d->get1DValueAt(inn) ;
         double newb = oldb - db ;
         this->mbias1d->set1DValueAt(inn,newb) ;
-        //cout<<db<<" ";
-        //cout<<endl;
+        #ifdef DEBUG_MODE
+        printf("%.03f " , db) ;
+        cout<<endl;
+        #endif // DEBUG_MODE
     }
 
     this->mDeltaWeightSum2d->zero() ;
     this->mDeltaBiasSum1d->zero() ;
     this->mSampleNumber = 0 ;
+
 }
 
 CNNOutputLayer::CNNOutputLayer(const int insize,const int outsize):CNNFullConnLayer(insize,outsize) {
@@ -275,7 +294,7 @@ ConvNetwork2::~ConvNetwork2()
 }
 
 void ConvNetwork2::doforward(CNNInputLayer* inputLayer , CNNConvLayer* convLayer ) {
-    int insize = inputLayer->mdata3d->getNumx() ;
+    //int insize = inputLayer->mdata3d->getNumx() ;
     int nband = inputLayer->mdata3d->getNumdep() ;
 
     Array3d* filter0 = convLayer->mfilter3dVector[0] ;
@@ -284,9 +303,16 @@ void ConvNetwork2::doforward(CNNInputLayer* inputLayer , CNNConvLayer* convLayer
     assert(nband==nbandf) ;
 
     int outsize = convLayer->mactiv3d->getNumx() ;
+    #ifdef DEBUG_MODE
+    wft_printArray3d(inputLayer->mdata3d , "input layer data:") ;
+    #endif // DEBUG_MODE
 
     for(unsigned int ifilter = 0 ; ifilter < convLayer->mfilter3dVector.size() ; ++ ifilter ){
         Array3d* currfilter = convLayer->mfilter3dVector[ifilter] ;
+        #ifdef DEBUG_MODE
+        wft_printArray3d(currfilter , "filter weights:") ;
+        #endif // DEBUG_MODE
+
         for(int outx = 0 ; outx < outsize ; ++outx ){
 
             for( int outy = 0 ; outy <outsize ; ++outy ){
@@ -308,8 +334,10 @@ void ConvNetwork2::doforward(CNNInputLayer* inputLayer , CNNConvLayer* convLayer
                 convLayer->mactiv3d->setValueAt(outx,outy,ifilter,relu_acti) ;
             }//end outy
         }//end outx
-
     }//end ifilter
+    #ifdef DEBUG_MODE
+    wft_printArray3d(convLayer->mactiv3d , "feature map:") ;
+    #endif // DEBUG_MODE
 }
 
 void ConvNetwork2::doforward(CNNInputLayer* inputLayer , CNNFullConnLayer* fcLayer ) {
@@ -317,20 +345,19 @@ void ConvNetwork2::doforward(CNNInputLayer* inputLayer , CNNFullConnLayer* fcLay
     int nw = fcLayer->mweight2d->getNumx() ;
     int nout = fcLayer->mactiv1d->get1DValueNum() ;
     assert(nin==nw) ;
-    //cout<<"input f-> fullconn"<<endl;
-    //cout<<"equation output activ"<<endl;
+
     for(int i = 0 ; i<nout ; ++ i ){
         double sum1 = fcLayer->mbias1d->get1DValueAt(i) ;
-        //cout<<sum1 ;
+
         for(int iw = 0 ; iw<nw ; ++ iw ){
             double wei = fcLayer->mweight2d->getValueAt(iw,i,0) ;
             double acti = inputLayer->mdata3d->get1DValueAt(iw) ;
             sum1 += wei*acti ;
-            //cout<<" + "<<wei<<" * "<<acti ;
+
         }
         double sigout = wft_sigmoid(sum1) ;
         fcLayer->mactiv1d->set1DValueAt(i,sigout) ;
-        //cout<<" = "<<sum1<<" -f(x)-> "<<sigout<<endl;
+
     }
 }
 
@@ -367,11 +394,18 @@ void ConvNetwork2::doforward(CNNConvLayer*  convLayer  , CNNPoolLayer* poolLayer
             }
         }
     }
+    #ifdef DEBUG_MODE
+    wft_printArray3d(poolLayer->mactiv3d,"Pool layer.");
+    #endif // DEBUG_MODE
 }
 void ConvNetwork2::doforward(CNNPoolLayer*  poolLayer  , CNNFullConnLayer* fcLayer ) {
     int n1dpool = poolLayer->mactiv3d->get1DValueNum() ;
     int nw = fcLayer->mweight2d->getNumx() ;
     assert(n1dpool==nw) ;
+    #ifdef DEBUG_MODE
+    wft_printArray3d(fcLayer->mweight2d,"output weights") ;
+    wft_printArray3d(fcLayer->mbias1d,"output bias") ;
+    #endif // DEBUG_MODE
     for(int i = 0 ; i<fcLayer->mactiv1d->get1DValueNum() ; ++ i ){
         double out1 = fcLayer->mbias1d->get1DValueAt(i) ;
         for( int iw = 0 ; iw < nw ; ++ iw ){
@@ -383,26 +417,27 @@ void ConvNetwork2::doforward(CNNPoolLayer*  poolLayer  , CNNFullConnLayer* fcLay
         double sigout = wft_sigmoid(out1) ;
         fcLayer->mactiv1d->set1DValueAt(i , sigout) ;
     }
+    #ifdef DEBUG_MODE
+    wft_printArray3d(fcLayer->mactiv1d,"output activ") ;
+    #endif // DEBUG_MODE
 }
 void ConvNetwork2::doforward(CNNFullConnLayer* fcLayer , CNNFullConnLayer* outputLayer) {
     int insize = fcLayer->mactiv1d->get1DValueNum() ;
     int nw =     outputLayer->mweight2d->getNumx() ;
     assert(insize==nw) ;
-    //cout<<"fullconn f-> output"<<endl;
 
     for(int i = 0 ; i<outputLayer->mactiv1d->get1DValueNum() ; ++ i ){
         double out1 = outputLayer->mbias1d->get1DValueAt(i) ;
-        //cout<<out1 ;
+
         for( int iw = 0 ; iw < nw ; ++ iw ){
             double wei = outputLayer->mweight2d->getValueAt(iw,i,0) ;
             double actifc = fcLayer->mactiv1d->get1DValueAt(iw) ;
             out1 += wei * actifc ;
-            //cout<<" + "<<wei<<" * "<<actifc ;
+
         }
         //sigmoid
         double sigout = wft_sigmoid(out1) ;
         outputLayer->mactiv1d->set1DValueAt(i , sigout) ;
-        //cout<<" = "<<out1<<" fx "<<sigout <<endl;
     }
 }
 
@@ -413,7 +448,7 @@ void ConvNetwork2::doforward(CNNPoolLayer*  poolLayer  , CNNConvLayer* convLayer
 
     int cnx = convLayer->mactiv3d->getNumx() ;
     int cny = convLayer->mactiv3d->getNumy() ;
-    int cnz = convLayer->mactiv3d->getNumdep() ;
+    //int cnz = convLayer->mactiv3d->getNumdep() ;
 
     int knx = convLayer->mfilter3dVector[0]->getNumx() ;
     int kny = convLayer->mfilter3dVector[0]->getNumy() ;
@@ -490,7 +525,8 @@ void ConvNetwork2::doforwardA2B(CNNLayer* layerA,CNNLayer* layerB) {
         if( layerB->getLayerType()==CNNLayerType::CNNLayerTypeConv ){
             CNNConvLayer* convLayer = (CNNConvLayer*)layerB ;
             this->doforward(poolLayer,convLayer) ;
-        }else if( layerB->getLayerType()==CNNLayerType::CNNLayerTypeFullConn ){
+        }else if( layerB->getLayerType()==CNNLayerType::CNNLayerTypeFullConn ||
+                  layerB->getLayerType()==CNNLayerType::CNNLayerTypeOutput ){
             CNNFullConnLayer* fcLayer = (CNNFullConnLayer*)layerB ;
             this->doforward(poolLayer,fcLayer) ;
         }else{
@@ -510,6 +546,10 @@ void ConvNetwork2::backpropagate_deltaA2B(CNNLayer* layerA,CNNLayer* layerB){
             CNNFullConnLayer* outputLayer = (CNNFullConnLayer*)layerA ;
             CNNFullConnLayer* fcLayer = (CNNFullConnLayer*)layerB ;
             this->backpropagate_delta(outputLayer,fcLayer) ;
+        }else if( typeB == CNNLayerType::CNNLayerTypePool ) {
+            CNNFullConnLayer* outputLayer = (CNNFullConnLayer*)layerA ;
+            CNNPoolLayer* pool = (CNNPoolLayer*)layerB ;
+            this->backpropagate_delta(outputLayer,pool) ;
         }else{
             cout<<"Error: 1 bad back propagate A2B."<<endl;
         }
@@ -555,20 +595,23 @@ void ConvNetwork2::backpropagate_deltaA2B(CNNLayer* layerA,CNNLayer* layerB){
 
 void ConvNetwork2::backpropagate_delta(CNNOutputLayer* outputLayer, int targetIndex) {
     //use cross entropy
-    //cout<<"output delta"<<endl;
-    //cout<<"acti y delta"<<endl;
+    #ifdef DEBUG_MODE
+    cout<<"output layer delta"<<endl;
+    #endif // DEBUG_MODE
     for(int i = 0 ; i<outputLayer->mdelta1d->get1DValueNum() ; ++ i ){
         double acti = outputLayer->mactiv1d->get1DValueAt(i) ;
         double y = 0.0 ;
         if( i==targetIndex ) y = 1.0 ;
         double delta1 = acti - y ;
         outputLayer->mdelta1d->set1DValueAt( i , delta1 ) ;
-        //cout<<acti<<" "<<y<<" "<<delta1<<endl;
+        #ifdef DEBUG_MODE
+        printf("%8.4f %8.4f %8.4f " , acti , y , delta1 ) ;
+        cout<<endl;
+        #endif // DEBUG_MODE
     }
 }
 void ConvNetwork2::backpropagate_delta(CNNFullConnLayer* outputLayer, CNNFullConnLayer* fcLayer ) {
-    //cout<<"fullconn back-> fullconn "<<endl;
-    //cout<<"neurons' delta"<<endl;
+
     for( int i = 0 ; i<fcLayer->mdelta1d->get1DValueNum() ; ++ i ){
         double sum1 = 0.0 ;
 
@@ -583,9 +626,9 @@ void ConvNetwork2::backpropagate_delta(CNNFullConnLayer* outputLayer, CNNFullCon
         double da_vs_dz = acti*(1.0-acti) ;
         double dc_vs_dz = da_vs_dz * sum1 ;
         fcLayer->mdelta1d->set1DValueAt(i , dc_vs_dz ) ;
-        //cout<<dc_vs_dz<<endl;
+
     }
-    //system("pause") ;
+
 }
 void ConvNetwork2::backpropagate_delta(CNNFullConnLayer* fcLayer,   CNNPoolLayer* poolLayer ) {
     for(int i = 0 ; i<poolLayer->mactiv3d->get1DValueNum() ; ++ i ){
@@ -596,11 +639,13 @@ void ConvNetwork2::backpropagate_delta(CNNFullConnLayer* fcLayer,   CNNPoolLayer
             sum1 += delta_k_lplus1 * w_ki_lplus1 ;
         }
         //activation function is f(x)=x.
-        double acti = poolLayer->mactiv3d->get1DValueAt(i) ;
         double da_vs_dz = 1.0 ;
         double dc_vs_dz = da_vs_dz * sum1 ;
         poolLayer->mdelta3d->set1DValueAt(i,dc_vs_dz) ;
     }
+    #ifdef DEBUG_MODE
+    wft_printArray3d(poolLayer->mdelta3d,"back propagate delta to pool:") ;
+    #endif // DEBUG_MODE
 }
 void ConvNetwork2::backpropagate_delta(CNNPoolLayer*   poolLayer,   CNNConvLayer* convLayer ) {
 
@@ -637,6 +682,9 @@ void ConvNetwork2::backpropagate_delta(CNNPoolLayer*   poolLayer,   CNNConvLayer
             }
         }
     }
+    #ifdef DEBUG_MODE
+    wft_printArray3d(convLayer->mdelta3d,"back propagate delta to conv:") ;
+    #endif // DEBUG_MODE
 }
 
 
@@ -654,7 +702,7 @@ void ConvNetwork2::backpropagate_delta(CNNConvLayer*   convLayer,   CNNPoolLayer
     int kny = convLayer->mfilter3dVector[0]->getNumy() ;
     int knz = convLayer->mfilter3dVector[0]->getNumdep() ;
 
-    int nfilter = (int)convLayer->mfilter3dVector.size() ;
+    //int nfilter = (int)convLayer->mfilter3dVector.size() ;
 
     assert(cnx==cny) ;
     assert(pnx==pny) ;

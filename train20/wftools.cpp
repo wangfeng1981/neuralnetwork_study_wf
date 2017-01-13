@@ -1,6 +1,7 @@
 #include "wftools.h"
 #include "array3d.h"
 #include <assert.h>
+#include <stdio.h>
 
 std::vector<std::string> wft_split(const std::string &text, char sep) {
     std::vector<std::string> tokens;
@@ -133,5 +134,18 @@ void wft_backpropagation_pool2conv(
                 }
             }
         }
+    }
+}
+
+void wft_printArray3d(const Array3d* a3d,string title) {
+    cout<<title<<endl;
+    for(int iz = 0 ; iz<a3d->getNumdep() ; ++ iz ){
+        for(int iy = 0 ; iy<a3d->getNumy() ; ++ iy ){
+            for(int ix = 0 ; ix<a3d->getNumx() ; ++ ix ){
+                printf("%5.2f " , a3d->getValueAt(ix,iy,iz)) ;
+            }
+            cout<<endl;
+        }
+        cout<<endl;
     }
 }

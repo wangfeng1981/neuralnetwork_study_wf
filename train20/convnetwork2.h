@@ -31,7 +31,7 @@ class CNNInputLayer:public CNNLayer {
         Array3d* mdata3d ;
         CNNInputLayer(const int nx,const int ny,const int nz) ;
         virtual ~CNNInputLayer() ;
-        void resetDataFromWImage(wImage& wimg) ;
+        void resetDataFromWImage(wImage& wimg,double scale) ;
 };
 
 class CNNConvLayer:public CNNLayer {

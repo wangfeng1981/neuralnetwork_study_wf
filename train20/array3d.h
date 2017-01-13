@@ -1,6 +1,6 @@
 #ifndef ARRAY3D_H
 #define ARRAY3D_H
-#include "wftools.h"
+
 
 class Array3d
 {

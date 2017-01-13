@@ -1,7 +1,8 @@
 #include "array3d.h"
 #include <assert.h>
 #include <string.h>
-
+#include <math.h>
+#include "wftools.h"
 
 Array3d::Array3d(const int numx ,const int numy ,const int numd ,const bool fillGaussRand)
 {

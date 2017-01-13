@@ -4,7 +4,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
-
+#include "array3d.h"
 
 using namespace std;
 
@@ -23,5 +23,7 @@ double wft_gaussrand( double muval , double stdval ) ;
 double wft_sigmoid(double z)  ;
 
 int wft_randFromZeroToN(int n);
+
+void wft_printArray3d(const Array3d* a3d,string title) ;
 
 #endif // WFTOOLS_H_INCLUDED

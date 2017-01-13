@@ -155,13 +155,14 @@
 	<string>
 	<vector>
 
-1484035708 e:\developing\neuralnetwork_study_wf\train20\wftools.h
+1484299609 e:\developing\neuralnetwork_study_wf\train20\wftools.h
 	<string>
 	<vector>
 	<sstream>
 	<iostream>
 	<stdlib.h>
 	<math.h>
+	"array3d.h"
 
 1482997062 source:e:\developing\neuralnetwork_study_wf\train20\example_decode.cpp
 	"lodepng.h"
@@ -212,7 +213,7 @@
 	"wImage.h"
 	"cnn.h"
 
-1484294600 source:e:\developing\neuralnetwork_study_wf\train20\main.cpp
+1484342041 source:e:\developing\neuralnetwork_study_wf\train20\main.cpp
 	<stdio.h>
 	<string>
 	<vector>
@@ -222,14 +223,16 @@
 	<assert.h>
 	<string.h>
 	"convnetwork2.h"
+	"wftools.h"
 
-1484018443 source:e:\developing\neuralnetwork_study_wf\train20\array3d.cpp
+1484314860 source:e:\developing\neuralnetwork_study_wf\train20\array3d.cpp
 	"array3d.h"
 	<assert.h>
 	<string.h>
-
-1484018437 e:\developing\neuralnetwork_study_wf\train20\array3d.h
+	<math.h>
 	"wftools.h"
+
+1484299609 e:\developing\neuralnetwork_study_wf\train20\array3d.h
 
 1483832418 source:e:\developing\neuralnetwork_study_wf\train20\convlayer.cpp
 	"ConvLayer.h"
@@ -242,10 +245,11 @@
 	"array3d.h"
 	"netlayer.h"
 
-1484185435 source:e:\developing\neuralnetwork_study_wf\train20\wftools.cpp
+1484299749 source:e:\developing\neuralnetwork_study_wf\train20\wftools.cpp
 	"wftools.h"
 	"array3d.h"
 	<assert.h>
+	<stdio.h>
 
 1484034576 source:e:\developing\neuralnetwork_study_wf\train20\netlayer.cpp
 	"netlayer.h"
@@ -319,11 +323,15 @@
 	"fclayer.h"
 	"array3d.h"
 
-1484291563 source:e:\developing\neuralnetwork_study_wf\train20\convnetwork2.cpp
+1484341991 source:e:\developing\neuralnetwork_study_wf\train20\convnetwork2.cpp
 	"convnetwork2.h"
 	<assert.h>
+	<stdio.h>
+	<iostream>
+	<stdlib.h>
+	"wftools.h"
 
-1484291343 e:\developing\neuralnetwork_study_wf\train20\convnetwork2.h
+1484299158 e:\developing\neuralnetwork_study_wf\train20\convnetwork2.h
 	"array3d.h"
 	<vector>
 	"wImage.h"
