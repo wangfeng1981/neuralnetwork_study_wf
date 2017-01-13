@@ -97,7 +97,7 @@ void CNeuron::calculateOutputLayerTheta( double y ) {
     double sp = a*(1.0-a) ;// this->sigmoid_prime(this->zeta) ;
 	double t = c * sp ;
 	this->theta = t ;//old
-	this->theta =  c ; //new cross entropy
+	this->theta = c ; //new cross entropy
 }
 
 void CNeuron::calculateHiddenLayerTheta( CLayer* nextLayer ) {

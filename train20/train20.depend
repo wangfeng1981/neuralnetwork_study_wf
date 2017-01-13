@@ -111,3 +111,220 @@
 	"wImage.h"
 	"cnn.h"
 
+1482458576 source:e:\developing\neuralnetwork_study_wf\train20\clayer.cpp
+	"clayer.h"
+	<assert.h>
+	<thread>
+
+1482458596 e:\developing\neuralnetwork_study_wf\train20\clayer.h
+	"cneuron.h"
+	<vector>
+
+1482458636 e:\developing\neuralnetwork_study_wf\train20\cneuron.h
+	<stdio.h>
+	<string>
+	<vector>
+
+1483580875 source:e:\developing\neuralnetwork_study_wf\train20\cneuron.cpp
+	"cneuron.h"
+	<stdlib.h>
+	<assert.h>
+	"clayer.h"
+	<math.h>
+
+1483060654 source:e:\developing\neuralnetwork_study_wf\train20\cnn.cpp
+	"cnn.h"
+	<assert.h>
+	<math.h>
+	<stdlib.h>
+	<fstream>
+	"wftools.h"
+	<time.h>
+
+1482472796 e:\developing\neuralnetwork_study_wf\train20\cnn.h
+	"cneuron.h"
+	"clayer.h"
+	<vector>
+	"wdata.h"
+
+1483077606 e:\developing\neuralnetwork_study_wf\train20\wdata.h
+	<vector>
+	"wImage.h"
+
+1483015582 e:\developing\neuralnetwork_study_wf\train20\wimage.h
+	<string>
+	<vector>
+
+1484035708 e:\developing\neuralnetwork_study_wf\train20\wftools.h
+	<string>
+	<vector>
+	<sstream>
+	<iostream>
+	<stdlib.h>
+	<math.h>
+
+1482997062 source:e:\developing\neuralnetwork_study_wf\train20\example_decode.cpp
+	"lodepng.h"
+	<iostream>
+
+1482353212 e:\developing\neuralnetwork_study_wf\train20\lodepng.h
+	<string.h>
+	<vector>
+	<string>
+	"lodepng.h"
+	<iostream>
+	"lodepng.h"
+
+1482353212 source:e:\developing\neuralnetwork_study_wf\train20\lodepng.cpp
+	"lodepng.h"
+	<limits.h>
+	<stdio.h>
+	<stdlib.h>
+
+1483016818 source:e:\developing\neuralnetwork_study_wf\train20\main1.cpp
+	<iostream>
+	<stdio.h>
+	<iomanip>
+	"wImage.h"
+
+1483077628 source:e:\developing\neuralnetwork_study_wf\train20\wdata.cpp
+	"wdata.h"
+	<assert.h>
+	<cstddef>
+
+1482196998 source:e:\developing\neuralnetwork_study_wf\train20\wftools.c
+
+1483015622 source:e:\developing\neuralnetwork_study_wf\train20\wimage.cpp
+	"wImage.h"
+	<assert.h>
+	"lodepng.h"
+	<iostream>
+
+1483079264 source:e:\developing\neuralnetwork_study_wf\train20\wsampleone.cpp
+	"wsampleone.h"
+	"lodepng.h"
+	<assert.h>
+	"wdata.h"
+	<iostream>
+
+1483066876 e:\developing\neuralnetwork_study_wf\train20\wsampleone.h
+	<vector>
+	"wImage.h"
+	"cnn.h"
+
+1484294600 source:e:\developing\neuralnetwork_study_wf\train20\main.cpp
+	<stdio.h>
+	<string>
+	<vector>
+	<stdlib.h>
+	<iostream>
+	<time.h>
+	<assert.h>
+	<string.h>
+	"convnetwork2.h"
+
+1484018443 source:e:\developing\neuralnetwork_study_wf\train20\array3d.cpp
+	"array3d.h"
+	<assert.h>
+	<string.h>
+
+1484018437 e:\developing\neuralnetwork_study_wf\train20\array3d.h
+	"wftools.h"
+
+1483832418 source:e:\developing\neuralnetwork_study_wf\train20\convlayer.cpp
+	"ConvLayer.h"
+	<assert.h>
+	<math.h>
+	<string.h>
+	<iostream>
+
+1483832402 e:\developing\neuralnetwork_study_wf\train20\convlayer.h
+	"array3d.h"
+	"netlayer.h"
+
+1484185435 source:e:\developing\neuralnetwork_study_wf\train20\wftools.cpp
+	"wftools.h"
+	"array3d.h"
+	<assert.h>
+
+1484034576 source:e:\developing\neuralnetwork_study_wf\train20\netlayer.cpp
+	"netlayer.h"
+	<iostream>
+	<assert.h>
+	<string.h>
+
+1484034500 e:\developing\neuralnetwork_study_wf\train20\netlayer.h
+	"array3d.h"
+
+1483830775 source:e:\developing\neuralnetwork_study_wf\train20\poollayer.cpp
+	"poollayer.h"
+	<iostream>
+	<math.h>
+	<assert.h>
+
+1483678586 e:\developing\neuralnetwork_study_wf\train20\poollayer.h
+	"netlayer.h"
+	<iostream>
+
+1484049645 source:e:\developing\neuralnetwork_study_wf\train20\convnetwork.cpp
+	"convnetwork.h"
+
+1484036457 e:\developing\neuralnetwork_study_wf\train20\convnetwork.h
+	"netlayer.h"
+	<vector>
+
+1484035165 source:e:\developing\neuralnetwork_study_wf\train20\fclayer.cpp
+	"fclayer.h"
+	"wftools.h"
+	<assert.h>
+	<iostream>
+	<iomanip>
+
+1484033133 e:\developing\neuralnetwork_study_wf\train20\fclayer.h
+	"netlayer.h"
+	"array3d.h"
+
+1484035381 source:e:\developing\neuralnetwork_study_wf\train20\inputlayer.cpp
+	"inputlayer.h"
+	"wImage.h"
+	<assert.h>
+	<iostream>
+
+1484035261 e:\developing\neuralnetwork_study_wf\train20\inputlayer.h
+	<string>
+	"netlayer.h"
+
+1483616964 source:e:\developing\neuralnetwork_study_wf\train20\main2.cpp
+	<stdio.h>
+	<string>
+	<vector>
+	"cneuron.h"
+	<stdlib.h>
+	"clayer.h"
+	"cnn.h"
+	<iostream>
+	<time.h>
+	<assert.h>
+	<string.h>
+	"netlayer.h"
+	"poollayer.h"
+	"wsampleone.h"
+
+1484049950 source:e:\developing\neuralnetwork_study_wf\train20\outputlayer.cpp
+	"outputlayer.h"
+	<assert.h>
+	<iomanip>
+
+1484049908 e:\developing\neuralnetwork_study_wf\train20\outputlayer.h
+	"fclayer.h"
+	"array3d.h"
+
+1484291563 source:e:\developing\neuralnetwork_study_wf\train20\convnetwork2.cpp
+	"convnetwork2.h"
+	<assert.h>
+
+1484291343 e:\developing\neuralnetwork_study_wf\train20\convnetwork2.h
+	"array3d.h"
+	<vector>
+	"wImage.h"
+

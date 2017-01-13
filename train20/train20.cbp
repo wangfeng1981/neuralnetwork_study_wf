@@ -35,27 +35,17 @@
 			<Add option="-std=c++11" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="clayer.cpp" />
-		<Unit filename="clayer.h" />
-		<Unit filename="cneuron.cpp" />
-		<Unit filename="cneuron.h" />
-		<Unit filename="cnn.cpp" />
-		<Unit filename="cnn.h" />
-		<Unit filename="example_decode.cpp" />
+		<Unit filename="array3d.cpp" />
+		<Unit filename="array3d.h" />
+		<Unit filename="convnetwork2.cpp" />
+		<Unit filename="convnetwork2.h" />
 		<Unit filename="lodepng.cpp" />
 		<Unit filename="lodepng.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="main1.cpp" />
 		<Unit filename="wImage.cpp" />
 		<Unit filename="wImage.h" />
-		<Unit filename="wdata.cpp" />
-		<Unit filename="wdata.h" />
-		<Unit filename="wftools.c">
-			<Option compilerVar="CC" />
-		</Unit>
+		<Unit filename="wftools.cpp" />
 		<Unit filename="wftools.h" />
-		<Unit filename="wsampleone.cpp" />
-		<Unit filename="wsampleone.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
