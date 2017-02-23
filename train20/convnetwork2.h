@@ -21,6 +21,7 @@ class CNNLayer {
         CNNLayer(){ mLayerType = CNNLayerTypeNone ; }
         virtual ~CNNLayer() {} ;
         CNNLayerType getLayerType() { return mLayerType; }
+        virtual void saveToDisk(char* filepath) {} ;
     protected:
         CNNLayerType mLayerType ;
 };
@@ -32,6 +33,7 @@ class CNNInputLayer:public CNNLayer {
         CNNInputLayer(const int nx,const int ny,const int nz) ;
         virtual ~CNNInputLayer() ;
         void resetDataFromWImage(wImage& wimg,double scale) ;
+        virtual void saveToDisk(char* filepath)   ;
 };
 
 class CNNConvLayer:public CNNLayer {
@@ -49,6 +51,7 @@ class CNNConvLayer:public CNNLayer {
         virtual ~CNNConvLayer() ;
         void computeAndSumFilterDeltaWeights(const Array3d* prevLayerActivArray) ;
         void updateFilterWeights(const double studyRate,const double momentum) ;
+        virtual void saveToDisk(char* filepath)   ;
 };
 
 class CNNPoolLayer:public CNNLayer{
@@ -58,6 +61,7 @@ class CNNPoolLayer:public CNNLayer{
         Array3d*   mdelta3d ;
         CNNPoolLayer(const int inx,const int iny,const int inz) ;
         virtual ~CNNPoolLayer() ;
+        virtual void saveToDisk(char* filepath)   ;
 };
 
 
@@ -74,6 +78,7 @@ class CNNFullConnLayer:public CNNLayer {
         virtual ~CNNFullConnLayer() ;
         void computeAndSumDeltaWeightsAndBias(const Array3d* prevLayerActivArray) ;
         void updateWeightsAndBias(double studyRate,double momentum) ;
+        virtual void saveToDisk(char* filepath)  ;
 };
 
 class CNNOutputLayer : public CNNFullConnLayer {
@@ -81,6 +86,7 @@ class CNNOutputLayer : public CNNFullConnLayer {
         CNNOutputLayer(const int insize,const int outsize) ;
         virtual ~CNNOutputLayer() ;
         void printBestFit() ;
+        int getBestFit() ;
         double computeMSE(int target) ;
 };
 
@@ -114,6 +120,8 @@ class ConvNetwork2
         void dobackpropagation(int targetIndex) ;
         void computeAndSumPartialDerivForWeightsAndBias() ;
         void updateWeightsAndBias(const double studyRate ,const double momentum ) ;
+
+        void saveToDisk(const char* filepath) ;
 
     protected:
 

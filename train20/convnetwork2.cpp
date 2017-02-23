@@ -18,6 +18,18 @@ CNNInputLayer::CNNInputLayer(const int nx,const int ny,const int nz) {
 CNNInputLayer::~CNNInputLayer() {
     SAFE_DELETE(mdata3d) ;
 }
+void CNNInputLayer::saveToDisk(char* filepath) {
+    FILE* pf = fopen(filepath , "w") ;
+    assert(pf) ;
+    fprintf(pf,"CNNInputLayer\n") ;
+    fprintf(pf,"onx  ony  onz\n") ;
+    fprintf(pf,"%d %d %d\n" , this->mdata3d->getNumx() ,
+            this->mdata3d->getNumy() ,
+            this->mdata3d->getNumdep() ) ;
+
+    fclose(pf) ;
+    pf = 0 ;
+}
 void CNNInputLayer::resetDataFromWImage(wImage& wimg,double scale) {
     assert(this->mdata3d->getNumx()==(int)wimg.getCols()) ;
     assert(this->mdata3d->getNumy()==(int)wimg.getRows()) ;
@@ -64,6 +76,31 @@ CNNConvLayer::~CNNConvLayer() {
         SAFE_DELETE(this->mfilter3dVector[i]) ;
         SAFE_DELETE(this->mDeltaFilterWeightsSum3dVector[i]) ;
     }
+}
+void CNNConvLayer::saveToDisk(char* filepath) {
+    FILE* pf = fopen(filepath , "w") ;
+    assert(pf) ;
+    fprintf(pf,"CNNConvLayer\n") ;
+    fprintf(pf,"nf fx fy fz ox oy\n") ;
+    fprintf(pf,"%d %d %d %d %d %d\n" ,
+            this->mfilter3dVector.size() ,
+            this->mfilter3dVector[0]->getNumx() ,
+            this->mfilter3dVector[1]->getNumy() ,
+            this->mfilter3dVector[2]->getNumdep() ,
+            this->mactiv3d->getNumx() ,
+            this->mactiv3d->getNumy()
+            ) ;
+
+    char buff[100] ;
+    for(int i = 0 ; i<this->mfilter3dVector.size() ; ++ i ){
+        Array3d* arr3d = this->mfilter3dVector[i] ;
+        arr3d->saveToFilePtr(pf) ;
+        sprintf(buff,"%s-f%d.png" , filepath , i) ;
+        arr3d->saveToPngFile(buff) ;
+    }
+
+    fclose(pf) ;
+    pf = 0 ;
 }
 
 void CNNConvLayer::computeAndSumFilterDeltaWeights(const Array3d* prevLayerActivArray) {
@@ -165,6 +202,23 @@ CNNPoolLayer::~CNNPoolLayer() {
     SAFE_DELETE(this->mdelta3d) ;
     SAFE_DELETE(this->minputweight3d) ;
 }
+void CNNPoolLayer::saveToDisk(char* filepath) {
+    FILE* pf = fopen(filepath , "w") ;
+    assert(pf) ;
+    fprintf(pf,"CNNPoolLayer\n") ;
+    fprintf(pf,"inx iny inz\n") ;
+    fprintf(pf,"%d  %d  %d \n" , this->minputweight3d->getNumx(),
+            this->minputweight3d->getNumy(),
+            this->minputweight3d->getNumdep()) ;
+    fprintf(pf,"onx ony onz\n") ;
+    fprintf(pf,"%d  %d  %d \n" , this->mactiv3d->getNumx(),
+            this->mactiv3d->getNumy(),
+            this->mactiv3d->getNumdep()) ;
+
+    fclose(pf) ;
+    pf = 0 ;
+}
+
 
 
 CNNFullConnLayer::CNNFullConnLayer(const int insize,const int outsize) {
@@ -190,6 +244,19 @@ CNNFullConnLayer::~CNNFullConnLayer() {
     SAFE_DELETE(this->mDeltaWeightSum2d) ;
     SAFE_DELETE(this->mDeltaBiasSum1d) ;
 }
+
+void CNNFullConnLayer::saveToDisk(char* filepath) {
+    FILE* pf = fopen(filepath , "w") ;
+    assert(pf) ;
+    fprintf(pf,"CNNFullConnLayer\n") ;
+    this->mweight2d->saveToFilePtr(pf) ;
+    this->mbias1d->saveToFilePtr(pf) ;
+
+    fclose(pf) ;
+    pf = 0 ;
+}
+
+
 void CNNFullConnLayer::computeAndSumDeltaWeightsAndBias(const Array3d* prevLayerActivArray) {
     int nneu = this->mactiv1d->get1DValueNum() ;
     int nw = this->mweight2d->getNumx() ;
@@ -264,6 +331,18 @@ void CNNOutputLayer::printBestFit() {
         }
     }
     cout<<"Best fit:"<<bestfit<<" possibility:"<<poss<<endl;
+}
+int CNNOutputLayer::getBestFit() {
+    int bestfit = -1 ;
+    double poss = -9999.99;
+    for(int i = 0 ; i<this->mactiv1d->get1DValueNum(); ++ i){
+        double a = this->mactiv1d->get1DValueAt(i) ;
+        if( a > poss ){
+            bestfit = i ;
+            poss = a ;
+        }
+    }
+    return bestfit ;
 }
 double CNNOutputLayer::computeMSE(int target) {
     double mse = 0.0 ;
@@ -809,3 +888,18 @@ void ConvNetwork2::updateWeightsAndBias(const double studyRate ,const double mom
 }
 
 
+
+void ConvNetwork2::saveToDisk(const char* filepath) {
+    FILE* pf = fopen(filepath , "w") ;
+    assert(pf) ;
+    char buff[100] ;
+    for(unsigned int i = 0 ; i<mLayerVector.size() ; ++ i ){
+        sprintf(buff,"%s.layer%d.txt" ,filepath, i) ;
+        CNNLayer* layer = mLayerVector[i] ;
+        layer->saveToDisk(buff) ;
+        fprintf(pf,"%d\n" , layer->getLayerType() ) ;
+        fprintf(pf,"%s\n" , buff) ;
+    }
+    fclose(pf);
+    pf = 0 ;
+}

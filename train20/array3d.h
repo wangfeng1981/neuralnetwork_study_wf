@@ -1,6 +1,8 @@
 #ifndef ARRAY3D_H
 #define ARRAY3D_H
 
+#include <stdio.h>
+#include <stdlib.h>
 
 class Array3d
 {
@@ -16,6 +18,9 @@ class Array3d
         int get1DValueNum() const ;
         double get1DValueAt(int i) const ;
         void set1DValueAt(int i ,double newval) ;
+        void saveToDisk(char* filepath) ;
+        void saveToFilePtr(FILE* pf) ;
+        void saveToPngFile(const char* filepath) ;
     protected:
 
     private:
