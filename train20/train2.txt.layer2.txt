@@ -1,0 +1,5 @@
+CNNPoolLayer
+inx iny inz
+28  28  8 
+onx ony onz
+14  14  8 

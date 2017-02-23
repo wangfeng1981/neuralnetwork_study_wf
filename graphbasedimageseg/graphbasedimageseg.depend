@@ -1,0 +1,63 @@
+# depslib dependency file v1.0
+1482353212 source:e:\developing\neuralnetwork_study_wf\train20\lodepng.cpp
+	"lodepng.h"
+	<limits.h>
+	<stdio.h>
+	<stdlib.h>
+
+1482353212 e:\developing\neuralnetwork_study_wf\train20\lodepng.h
+	<string.h>
+	<vector>
+	<string>
+	"lodepng.h"
+	<iostream>
+	"lodepng.h"
+
+1487854595 source:e:\developing\neuralnetwork_study_wf\train20\wimage.cpp
+	"wImage.h"
+	<assert.h>
+	"lodepng.h"
+	<iostream>
+	<cmath>
+	<cstdlib>
+
+1487854290 e:\developing\neuralnetwork_study_wf\train20\wimage.h
+	<string>
+	<vector>
+	<tuple>
+
+1487843088 source:e:\developing\neuralnetwork_study_wf\graphbasedimageseg\main.cpp
+	<iostream>
+	<vector>
+	"../train20/wImage.h"
+	<cmath>
+	<algorithm>
+	<set>
+	"wftgraphbaseimageseg.h"
+
+1487816550 source:e:\developing\neuralnetwork_study_wf\wftgraphbaseimageseg.cpp
+	"wftgraphbaseimageseg.h"
+	<algorithm>
+	<iostream>
+
+1487816504 e:\developing\neuralnetwork_study_wf\wftgraphbaseimageseg.h
+	<vector>
+	<string>
+	<cmath>
+	"../neuralnetwork_study_wf/train20/wImage.h"
+
+1487842430 e:\developing\neuralnetwork_study_wf\graphbasedimageseg\wftgraphbaseimageseg.h
+	<vector>
+	<string>
+	<cmath>
+	"../train20/wImage.h"
+	<list>
+	<memory>
+
+1487854160 source:e:\developing\neuralnetwork_study_wf\graphbasedimageseg\wftgraphbaseimageseg.cpp
+	"wftgraphbaseimageseg.h"
+	<algorithm>
+	<iostream>
+	<cstdio>
+	<cassert>
+

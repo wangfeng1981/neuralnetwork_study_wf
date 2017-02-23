@@ -1,0 +1,5 @@
+CNNPoolLayer
+inx iny inz
+10  10  16 
+onx ony onz
+5  5  16 

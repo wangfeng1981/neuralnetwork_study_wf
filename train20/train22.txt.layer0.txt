@@ -1,0 +1,3 @@
+CNNInputLayer
+onx  ony  onz
+32 32 3
