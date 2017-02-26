@@ -138,6 +138,8 @@ void wftGraph::segmentImage( wImaged& image , const int k , const int minsize ) 
     cout<<"edges and regions done "<<this->edges.size()<<","<<this->regions.size()<<endl;
     //segmentation
     sort( this->edges.begin() , this->edges.end() , wftFnEdgeCompare ) ;
+    size_t regioncount = this->regions.size() ;
+    size_t onepercentcount = this->edges.size() / 100 + 1;
 
     for( size_t ie = 0 ; ie < this->edges.size() ; ++ie ){
         wftGraphEdge* currEdgePtr = edges[ie] ;
@@ -150,8 +152,12 @@ void wftGraph::segmentImage( wImaged& image , const int k , const int minsize ) 
                 //join two region
                 wftRegion* joinRegion = this->joinTwoRegion( rptr0 , rptr1 ) ;
                 joinRegion->threshold = currEdgePtr->weight + k*1.0 / joinRegion->vertices.size() ;
+                --regioncount ;
                 //cout<<"joined by edge "<<ie<<endl;
             }
+        }
+        if( ie % onepercentcount == 0 ){
+            cout<<"iedge:"<<ie<<" regionCount:"<<regioncount<<"."<<endl ;
         }
     }
     for( auto it = this->regions.begin() ; it != this->regions.end() ;  ){

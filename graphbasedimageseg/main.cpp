@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <set>
 #include "wftgraphbaseimageseg.h"
+#include <cstdio>
 
 using namespace std;
 
@@ -19,12 +20,24 @@ bool fnWftEdgeCompare( const wftGraphEdge& e0 , const wftGraphEdge& e1 ){
 int main()
 {
     cout << "Graph based image segmentation by jfwf@yeah.net 20170222." << endl;
+    string inputimage ;
+    cout<<"input png image path:"<<endl ;
+    cin>>inputimage ;
+    cout<<"input sigma k minsize:"<<endl ;
+    double sigma ;
+    int k , minsize ;
+    cin>>sigma>>k>>minsize ;
+    cout<<"Your input:"<<endl ;
+    cout<<inputimage<<endl;
+    cout<<sigma<<endl;
+    cout<<k<<endl;
+    cout<<minsize<<endl;
 
-    wImaged image("beach.png") ;
-    wImaged image2 = image.gaussBlur(0.5) ;
+    wImaged image(inputimage.c_str()) ;
+    wImaged image2 = image.gaussBlur(sigma) ;
     cout<<"gauss smooth done."<<endl;
     wftGraph graph ;
-    graph.segmentImage(image2 , 500 , 50 ) ;
+    graph.segmentImage(image2 , k , minsize ) ;
 
     wImaged image3( image.getRows() , image.getCols() ) ;
     for( wftRegion* rptr : graph.regions ){
@@ -37,7 +50,13 @@ int main()
             image3.setRGB( row , col , r,g,b ) ;
         }
     }
-    image3.saveToFile("segmented.png") ;
-
+    string outpath = inputimage + ".segout.png" ;
+    image3.saveToFile(outpath) ;
+    cout<<"Result in "<<outpath<<endl ;
+    cout<<"All finished."<<endl ;
+    getchar() ;
+    getchar() ;
+    getchar() ;
+    getchar() ;
     return 0;
 }
