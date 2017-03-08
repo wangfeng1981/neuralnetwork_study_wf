@@ -23,7 +23,7 @@ int main()
     string inputimage ;
     cout<<"input png image path:"<<endl ;
     cin>>inputimage ;
-    cout<<"input sigma k minsize:"<<endl ;
+    cout<<"input sigma(for gauss smooth) k(for init region weight) minsize(for merge small region):"<<endl ;
     double sigma ;
     int k , minsize ;
     cin>>sigma>>k>>minsize ;
@@ -40,7 +40,19 @@ int main()
     graph.segmentImage(image2 , k , minsize ) ;
 
     wImaged image3( image.getRows() , image.getCols() ) ;
-    for( wftRegion* rptr : graph.regions ){
+    wftRegion* pRegion = graph.regions.rootNode ;
+    while( pRegion){
+        double r = rand()%256 ;
+        double g = rand()%256 ;
+        double b = rand()%256 ;
+        for( size_t iv = 0 ; iv < pRegion->vertices.size() ; ++ iv ){
+            int row = pRegion->vertices[iv]->irow ;
+            int col = pRegion->vertices[iv]->icol ;
+            image3.setRGB( row , col , r,g,b ) ;
+        }
+        pRegion = pRegion->nextNode ;
+    }
+    /*for( wftRegion* rptr : graph.regions ){
         double r = rand()%256 ;
         double g = rand()%256 ;
         double b = rand()%256 ;
@@ -49,7 +61,7 @@ int main()
             int col = rptr->vertices[iv]->icol ;
             image3.setRGB( row , col , r,g,b ) ;
         }
-    }
+    }*/
     string outpath = inputimage + ".segout.png" ;
     image3.saveToFile(outpath) ;
     cout<<"Result in "<<outpath<<endl ;

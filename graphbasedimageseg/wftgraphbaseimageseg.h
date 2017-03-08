@@ -26,21 +26,37 @@ struct wftGraphEdge{
 struct wftGraphVertex{
     inline wftGraphVertex():regionPtr(nullptr){} ;
     int icol,irow ;
-    double r,g,b ;
+    float r,g,b ;
     wftRegion* regionPtr ;
     vector<wftGraphEdge*> edges ;
-    double colorDiff( wftGraphVertex& other ) ;
+    float colorDiff( wftGraphVertex& other ) ;
 };
 
 struct wftRegion{
+    inline wftRegion():threshold(0),prevNode(0),nextNode(0){} ;
     vector<wftGraphVertex*> vertices ;
     double threshold ;
+    wftRegion* prevNode ;
+    wftRegion* nextNode ;
 };
+
+struct wftRegionList{
+    inline wftRegionList():backNode(0),rootNode(0),nodeCount(0){} ;
+    ~wftRegionList() ;
+    void pushNode( wftRegion* node )  ;
+    void removeAndDeleteNode( wftRegion* node ) ;
+    wftRegion* backNode ;
+    wftRegion* rootNode ;
+    inline size_t size(){ return nodeCount ; } ;
+private:
+    size_t nodeCount ;
+};
+
 
 struct wftGraph{
     vector<wftGraphVertex*> vertices ;
     vector<wftGraphEdge*> edges ;
-    list<wftRegion*> regions ;
+    wftRegionList regions ;
 
     ~wftGraph() ;
     void reset() ;

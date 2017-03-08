@@ -9,11 +9,11 @@ using std::sort ;
 using std::cout ;
 using std::endl ;
 
-double wftGraphVertex::colorDiff(wftGraphVertex& other){
-    double d0 = this->r - other.r ;
-    double d1 = this->g - other.g ;
-    double d2 = this->b - other.b ;
-    return sqrt( d0*d0+d1*d1+d2*d2 ) ;
+float wftGraphVertex::colorDiff(wftGraphVertex& other){
+    float d0 = this->r - other.r ;
+    float d1 = this->g - other.g ;
+    float d2 = this->b - other.b ;
+    return (float)sqrt( d0*d0+d1*d1+d2*d2 ) ;
 }
 
 void wftGraph::reset(){
@@ -31,13 +31,20 @@ void wftGraph::reset(){
             this->edges[i] = nullptr ;
         }
     }
+    wftRegion* pRegion = regions.rootNode ;
+    while(pRegion){
+        wftRegion* pdel = pRegion ;
+        pRegion = pRegion->nextNode ;
+        delete pdel ;
+    }
+    /*
     for( auto it = regions.begin() ; it != regions.end() ; ++ it  ){
         wftRegion* rptr = *it ;
         if( rptr ){
             delete rptr ;
             *it = nullptr ;
         }
-    }
+    }*/
 }
 
 wftGraph::~wftGraph() {
@@ -70,6 +77,51 @@ wftRegion* wftGraph::joinTwoRegion( wftRegion* rptr0 , wftRegion* rptr1 ) {
     return rptr0 ;
 }
 
+wftRegionList::~wftRegionList(){
+    wftRegion* c = this->rootNode ;
+    while(c){
+        wftRegion* pdel = c ;
+        c = c->nextNode ;
+        delete pdel ;
+    }
+    this->backNode = 0 ;
+    this->rootNode = 0 ;
+    this->nodeCount = 0 ;
+}
+void wftRegionList::pushNode(wftRegion* node){
+    assert(node!=nullptr) ;
+    assert(node->prevNode==nullptr) ;
+    assert(node->nextNode==nullptr) ;
+    if(this->backNode==nullptr){
+        this->backNode = node ;
+        this->rootNode = node ;
+    }else{
+        node->prevNode = this->backNode ;
+        this->backNode->nextNode = node ;
+        this->backNode  = node ;
+    }
+    ++ this->nodeCount ;
+}
+void wftRegionList::removeAndDeleteNode(wftRegion* node){
+    assert(node!=nullptr) ;
+    if( this->rootNode == node ){
+        this->rootNode = node->nextNode ;
+        if( this->rootNode ){
+            this->rootNode->prevNode = nullptr ;
+        }
+    }else{
+        node->prevNode->nextNode = node->nextNode ;
+        if(node->nextNode){
+            node->nextNode->prevNode = node->prevNode ;
+        }
+    }
+    if( this->backNode == node ){
+        this->backNode = node->prevNode ;
+    }
+    delete node ;
+    -- this->nodeCount ;
+}
+
 void wftGraph::segmentImage( wImaged& image , const int k , const int minsize ) {
 
     this->reset() ;
@@ -85,6 +137,9 @@ void wftGraph::segmentImage( wImaged& image , const int k , const int minsize ) 
             vptr->irow = irow ;
             image.getRGB(irow,icol , vptr->r, vptr->g, vptr->b ) ;
             this->vertices.push_back(vptr) ;
+        }
+        if( irow % 20 == 0 ){
+            cout<<"Extract vertices row:"<<irow<<endl ;
         }
     }
     cout<<"vertices done"<<endl ;
@@ -132,7 +187,11 @@ void wftGraph::segmentImage( wImaged& image , const int k , const int minsize ) 
             rptr->threshold = k ;
             rptr->vertices.push_back(vptr) ;
             vptr->regionPtr = rptr ;
-            this->regions.push_back(rptr) ;
+            this->regions.pushNode( rptr ) ;
+            //this->regions.push_back(rptr) ;
+        }
+        if(irow % 20==0 ){
+            cout<<"Extract edges and regions row:"<<irow<<endl ;
         }
     }
     cout<<"edges and regions done "<<this->edges.size()<<","<<this->regions.size()<<endl;
@@ -151,15 +210,18 @@ void wftGraph::segmentImage( wImaged& image , const int k , const int minsize ) 
             if( currEdgePtr->weight <= rptr0->threshold && currEdgePtr->weight <= rptr1->threshold ){
                 //join two region
                 wftRegion* joinRegion = this->joinTwoRegion( rptr0 , rptr1 ) ;
+                this->regions.removeAndDeleteNode(rptr1) ;
+                //it = this->regions.erase(it) ; here!!!!! 删除merge后的region释放内存！！！
                 joinRegion->threshold = currEdgePtr->weight + k*1.0 / joinRegion->vertices.size() ;
                 --regioncount ;
                 //cout<<"joined by edge "<<ie<<endl;
             }
         }
         if( ie % onepercentcount == 0 ){
-            cout<<"iedge:"<<ie<<" regionCount:"<<regioncount<<"."<<endl ;
+            cout<<"iedge:"<<ie<<" regionCount:"<<this->regions.size()<<"."<<endl ;
         }
     }
+    /*
     for( auto it = this->regions.begin() ; it != this->regions.end() ;  ){
         wftRegion* rptr = *it ;
         if(rptr->vertices.size()==0){
@@ -168,7 +230,7 @@ void wftGraph::segmentImage( wImaged& image , const int k , const int minsize ) 
         }else{
             ++ it ;
         }
-    }
+    }*/
     cout<<"first segment, region count:"<<this->regions.size()<<endl ;
     for(size_t ie = 0 ; ie < edges.size() ; ++ ie ){
         wftGraphEdge* currEdgePtr = edges[ie] ;
@@ -179,10 +241,15 @@ void wftGraph::segmentImage( wImaged& image , const int k , const int minsize ) 
             wftRegion* rptr1 = vert1Ptr->regionPtr ;
             if( (int)rptr0->vertices.size() <= minsize || (int)rptr1->vertices.size() <= minsize ){
                 wftRegion* joinRegion = this->joinTwoRegion( rptr0 , rptr1 ) ;
+                this->regions.removeAndDeleteNode(rptr1) ;
                 joinRegion->threshold = currEdgePtr->weight + k / joinRegion->vertices.size() ;
             }
         }
+        if( ie % onepercentcount == 0 ){
+            cout<<"iedge:"<<ie<<" regionCount:"<<this->regions.size()<<"."<<endl ;
+        }
     }
+    /*
     for( auto it = this->regions.begin() ; it != this->regions.end() ;  ){
         wftRegion* rptr = *it ;
         if(rptr->vertices.size()==0){
@@ -191,7 +258,7 @@ void wftGraph::segmentImage( wImaged& image , const int k , const int minsize ) 
         }else{
             ++it ;
         }
-    }
+    }*/
     cout<<"second segment, region count:"<<this->regions.size()<<endl ;
 }
 

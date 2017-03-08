@@ -163,7 +163,13 @@ wImaged::wImaged(int nrow,int ncol):mRows(nrow),mCols(ncol)
 wImaged::~wImaged()
 {
 }
-
+void wImaged::getRGB(const int row,const int col , float& r,float& g,float& b){
+    double r1,g1,b1 ;
+    this->getRGB(row,col , r1,g1,b1) ;
+    r = (float)r1 ;
+    g = (float)g1 ;
+    b = (float)b1 ;
+}
 void wImaged::getRGB(const int row,const int col , double& r,double& g,double& b) {
     assert(row >=0 && row < this->mRows ) ;
     assert(col >=0 && col < this->mCols ) ;

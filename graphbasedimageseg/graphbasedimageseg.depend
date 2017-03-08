@@ -13,7 +13,7 @@
 	<iostream>
 	"lodepng.h"
 
-1487854595 source:e:\developing\neuralnetwork_study_wf\train20\wimage.cpp
+1488872543 source:e:\developing\neuralnetwork_study_wf\train20\wimage.cpp
 	"wImage.h"
 	<assert.h>
 	"lodepng.h"
@@ -21,12 +21,12 @@
 	<cmath>
 	<cstdlib>
 
-1487854290 e:\developing\neuralnetwork_study_wf\train20\wimage.h
+1488872577 e:\developing\neuralnetwork_study_wf\train20\wimage.h
 	<string>
 	<vector>
 	<tuple>
 
-1487905595 source:e:\developing\neuralnetwork_study_wf\graphbasedimageseg\main.cpp
+1488883376 source:e:\developing\neuralnetwork_study_wf\graphbasedimageseg\main.cpp
 	<iostream>
 	<vector>
 	"../train20/wImage.h"
@@ -47,7 +47,7 @@
 	<cmath>
 	"../neuralnetwork_study_wf/train20/wImage.h"
 
-1487842430 e:\developing\neuralnetwork_study_wf\graphbasedimageseg\wftgraphbaseimageseg.h
+1488883894 e:\developing\neuralnetwork_study_wf\graphbasedimageseg\wftgraphbaseimageseg.h
 	<vector>
 	<string>
 	<cmath>
@@ -55,7 +55,7 @@
 	<list>
 	<memory>
 
-1487903422 source:e:\developing\neuralnetwork_study_wf\graphbasedimageseg\wftgraphbaseimageseg.cpp
+1488883811 source:e:\developing\neuralnetwork_study_wf\graphbasedimageseg\wftgraphbaseimageseg.cpp
 	"wftgraphbaseimageseg.h"
 	<algorithm>
 	<iostream>

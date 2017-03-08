@@ -34,6 +34,7 @@ class wImaged
         wImaged(int nrow,int ncol) ;
         ~wImaged();
         void getRGB(const int row,const int col , double& r,double& g,double& b) ;
+        void getRGB(const int row,const int col , float& r,float& g,float& b) ;
         void setRGB(const int row,const int col , double r,double g , double b) ;
         void setRGB1d(const int index1d, double r,double g , double b) ;
         int getRows() ;
